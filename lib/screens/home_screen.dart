@@ -7,7 +7,7 @@ import '../widgets/color_picker_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
-  static const apiName = 'insert-your-name-here'; // per assignment: don't add a form
+  static const apiName = "insert-your-name-here"; // assignment requirement
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,97 +16,217 @@ class HomeScreen extends ConsumerWidget {
     final locAsync = ref.watch(locationProvider);
 
     return Scaffold(
-      backgroundColor: Color(settings.bgColorValue),
+      backgroundColor: Colors.black, // dark background as in screenshot
       appBar: AppBar(
-        title: const Text('Resume Generator'),
-        backgroundColor: Color(settings.bgColorValue),
+        title: const Text("Resume Generator"),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         elevation: 0,
         actions: [
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(8.0),
             child: locAsync.when(
-              data: (pos) => Text('${pos.latitude.toStringAsFixed(4)}, ${pos.longitude.toStringAsFixed(4)}'),
-              loading: () => const Text('...GPS'),
-              error: (_,__) => const Text('GPS off'),
+              data: (pos) => Text(
+                "${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)}",
+                style: const TextStyle(color: Colors.white),
+              ),
+              loading: () => const Text("...GPS", style: TextStyle(color: Colors.white)),
+              error: (_, __) => const Text("GPS off", style: TextStyle(color: Colors.red)),
             ),
-          )
+          ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            // Controls
-            Row(
-              children: [
-                const Text('Font size'),
-                Expanded(
-                  child: Slider(
-                    min: 10,
-                    max: 36,
-                    value: settings.fontSize,
-                    onChanged: (v) => ref.read(settingsProvider.notifier).setFontSize(v),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.format_color_text),
-                  onPressed: () async {
-                    final c = await showColorPickerDialog(context, Color(settings.fontColorValue));
-                    if (c != null) ref.read(settingsProvider.notifier).setFontColor(c);
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.format_color_fill),
-                  onPressed: () async {
-                    final c = await showColorPickerDialog(context, Color(settings.bgColorValue));
-                    if (c != null) ref.read(settingsProvider.notifier).setBgColor(c);
-                  },
-                ),
-              ],
-            ),
-
-            // regenerate button
-            Row(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // force re-fetch (regenerate)
-                    ref.invalidate(resumeProvider(apiName));
-                  },
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Regenerate Resume'),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-            // Resume area
+            // Resume card
             Expanded(
               child: resumeAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text('Failed to load resume: $e')),
+                error: (e, _) => Center(
+                  child: Text("Error: $e", style: const TextStyle(color: Colors.red)),
+                ),
                 data: (resume) {
-                  final sb = StringBuffer();
-                  sb.writeln(resume.name);
-                  sb.writeln('\nSkills: ${resume.skills.join(', ')}\n');
-                  sb.writeln('Projects:');
-                  for (final p in resume.projects) {
-                    sb.writeln('- ${p['title'] ?? p['name'] ?? ''}');
-                    if (p['description'] != null) sb.writeln('  ${p['description']}');
-                  }
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Color(settings.bgColorValue),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                           // name Section
+                          Text(
+                            "NAME",
+                            style: TextStyle(
+                              fontSize: settings.fontSize,
+                              fontWeight: FontWeight.bold,
+                              color: Color(settings.fontColorValue),
+                            ),
+                          ),
+                          const Divider(),
+                          
+                            Text(
+                              "• ${resume.name ?? ''}",
+                              style: TextStyle(
+                                fontSize: settings.fontSize,
+                                color: Color(settings.fontColorValue),
+                              ),
+                            ),
+                          
+                          const SizedBox(height: 16),
 
-                  return SingleChildScrollView(
-                    child: Text(
-                      sb.toString(),
-                      style: TextStyle(
-                        fontSize: settings.fontSize,
-                        color: Color(settings.fontColorValue),
+                          // Skills Section
+                          Text(
+                            "SKILLS",
+                            style: TextStyle(
+                              fontSize: settings.fontSize,
+                              fontWeight: FontWeight.bold,
+                              color: Color(settings.fontColorValue),
+                            ),
+                          ),
+                          const Divider(),
+                          ...resume.skills.map(
+                            (s) => Text(
+                              "• $s",
+                              style: TextStyle(
+                                fontSize: settings.fontSize,
+                                color: Color(settings.fontColorValue),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Projects Section
+                          Text(
+                            "PROJECTS",
+                            style: TextStyle(
+                              fontSize: settings.fontSize,
+                              fontWeight: FontWeight.bold,
+                              color: Color(settings.fontColorValue),
+                            ),
+                          ),
+                          const Divider(),
+                          ...resume.projects.map(
+                            (p) => Text(
+                              "• ${p['title'] ?? ''} - ${p['description'] ?? ''}",
+                              style: TextStyle(
+                                fontSize: settings.fontSize,
+                                color: Color(settings.fontColorValue),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
                 },
               ),
             ),
+
+            const SizedBox(height: 12),
+
+            // Font size slider
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Font Size: ${settings.fontSize.toInt()}",
+                    style: const TextStyle(color: Colors.white)),
+                Expanded(
+                  child: Slider(
+                    min: 12,
+                    max: 28,
+                    value: settings.fontSize,
+                    onChanged: (v) => ref.read(settingsProvider.notifier).setFontSize(v),
+                  ),
+                ),
+              ],
+            ),
+
+            // Controls row (Font Color, Bg Color, Regenerate)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Font Color button
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[900], // dark button
+                        foregroundColor: Colors.white,     // text/icon color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4), // flat rectangle look
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () async {
+                        final c = await showColorPickerDialog(
+                            context, Color(settings.fontColorValue));
+                        if (c != null) {
+                          ref.read(settingsProvider.notifier).setFontColor(c);
+                        }
+                      },
+                      icon: const Icon(Icons.format_color_text),
+                      label: const Text("Font Color"),
+                    ),
+                  ),
+                ),
+
+                // Background Color button
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[900],
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () async {
+                        final c = await showColorPickerDialog(
+                            context, Color(settings.bgColorValue));
+                        if (c != null) {
+                          ref.read(settingsProvider.notifier).setBgColor(c);
+                        }
+                      },
+                      icon: const Icon(Icons.format_color_fill),
+                      label: const Text("Bg Color"),
+                    ),
+                  ),
+                ),
+
+                // Regenerate button
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[900],
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () {
+                        ref.invalidate(resumeProvider(apiName));
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: const Text("Regenerate"),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
           ],
         ),
       ),
