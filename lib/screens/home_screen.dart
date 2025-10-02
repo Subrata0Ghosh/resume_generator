@@ -71,7 +71,7 @@ class HomeScreen extends ConsumerWidget {
                           const Divider(),
                           
                             Text(
-                              "• ${resume.name ?? ''}",
+                              "• ${resume.name}",
                               style: TextStyle(
                                 fontSize: settings.fontSize,
                                 color: Color(settings.fontColorValue),
@@ -140,7 +140,7 @@ class HomeScreen extends ConsumerWidget {
                   child: Slider(
                     min: 12,
                     max: 28,
-                    value: settings.fontSize,
+                    value: settings.fontSize.clamp(12.0, 28.0),
                     onChanged: (v) => ref.read(settingsProvider.notifier).setFontSize(v),
                   ),
                 ),

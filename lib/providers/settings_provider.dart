@@ -38,8 +38,10 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final f = box.get('fontSize', defaultValue: 16.0);
     final fc = box.get('fontColor', defaultValue: 0xFF000000);
     final bg = box.get('bgColor', defaultValue: 0xFFFFFFFF);
+    double fontSize = (f is double) ? f : (f is int ? f.toDouble() : 16.0);
+    fontSize = fontSize.clamp(12.0, 28.0);
     state = state.copyWith(
-      fontSize: (f is double) ? f : (f is int ? f.toDouble() : 16.0),
+      fontSize: fontSize,
       fontColorValue: fc is int ? fc : 0xFF000000,
       bgColorValue: bg is int ? bg : 0xFFFFFFFF,
     );
