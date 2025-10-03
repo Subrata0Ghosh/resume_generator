@@ -13,7 +13,8 @@ class Settings {
     required this.bgColorValue,
   });
 
-  Settings copyWith({double? fontSize, int? fontColorValue, int? bgColorValue}) {
+  Settings copyWith(
+      {double? fontSize, int? fontColorValue, int? bgColorValue}) {
     return Settings(
       fontSize: fontSize ?? this.fontSize,
       fontColorValue: fontColorValue ?? this.fontColorValue,
@@ -63,5 +64,5 @@ class SettingsNotifier extends StateNotifier<Settings> {
   }
 }
 
-final settingsProvider =
-    StateNotifierProvider<SettingsNotifier, Settings>((ref) => SettingsNotifier());
+final settingsProvider = StateNotifierProvider<SettingsNotifier, Settings>(
+    (ref) => SettingsNotifier());
