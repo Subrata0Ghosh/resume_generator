@@ -8,10 +8,10 @@ The app also supports **regenerating random resume data** from the API.
 ## 📸 Demo Images
 
 <p align="center">
-  <img src="images/hom_screen.png" alt="home screen" width="200"/>
-  <img src="images/bg_color_change.png" alt="bg color change" width="200"/>
-  <img src="images/design_change.png" alt="design change" width="200"/>
-  <img src="images/font_size_change.png" alt="font size change" width="200"/>
+  <img src="images/hom_screen.png" alt="home screen" width="22%"/>
+  <img src="images/bg_color_change.png" alt="bg color change" width="22%"/>
+  <img src="images/design_change.png" alt="design change" width="22%"/>
+  <img src="images/font_size_change.png" alt="font size change" width="22%"/>
 </p>
 
 ---
