@@ -16,12 +16,13 @@ The app also supports **regenerating random resume data** from the API.
 
 ---
 
-## 🎬 Demo Video
+## 🎬 App Demo Videos
 
-[![Watch the demo](https://img.youtube.com/vi/SLWTYvD0qlo/0.jpg)](https://youtu.be/SLWTYvD0qlo)
+| 🖥️ Desktop Demo | 📱 Mobile Demo |
+|-----------------|----------------|
+| [![Desktop Demo](https://img.youtube.com/vi/SLWTYvD0qlo/0.jpg)](https://youtu.be/SLWTYvD0qlo) | [![Mobile Demo](https://img.youtube.com/vi/Nw2BJSQQuNo/0.jpg)](https://youtube.com/shorts/Nw2BJSQQuNo?feature=share) |
 
-> Click the image above to watch the demo on YouTube.
-
+> Click the thumbnails above to watch the demo videos on YouTube.
 ---
 
 ## 📂 Project Structure
